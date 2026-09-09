@@ -622,7 +622,7 @@ function checkArchivePassword() {
     // =====================================
 
     const correctPassword =
-        "1234";
+        "mf26";
 
 
     if (password === correctPassword) {
