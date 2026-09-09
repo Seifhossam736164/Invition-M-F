@@ -1,66 +1,133 @@
 // =========================================
-// Wedding Invitation
+// Firebase
 // =========================================
 
-const openBtn = document.getElementById("openBtn");
-const welcomeScreen = document.getElementById("welcomeScreen");
-const content = document.querySelector(".content");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
-const music = document.getElementById("music");
-const musicBtn = document.getElementById("musicBtn");
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    orderBy,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+// =========================================
+// Firebase Configuration
+// =========================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyA4v_4b1UsQyalpajKwovvJZTMWofCjQms",
+    authDomain: "mohamedandfayrouz-71d09.firebaseapp.com",
+    projectId: "mohamedandfayrouz-71d09",
+    storageBucket: "mohamedandfayrouz-71d09.firebasestorage.app",
+    messagingSenderId: "435009820828",
+    appId: "1:435009820828:web:4d6a323a4b3bb5f59cb559",
+    measurementId: "G-SVTHC1QYG4"
+};
+
+
+// تشغيل Firebase
+const app = initializeApp(firebaseConfig);
+
+
+// تشغيل Firestore
+const db = getFirestore(app);
+
+
+// مجموعة التهاني
+const messagesRef = collection(db, "messages");
+
+
+// =========================================
+// العناصر
+// =========================================
+
+const openBtn =
+    document.getElementById("openBtn");
+
+const welcomeScreen =
+    document.getElementById("welcomeScreen");
+
+const content =
+    document.querySelector(".content");
+
+const music =
+    document.getElementById("music");
+
+const musicBtn =
+    document.getElementById("musicBtn");
 
 
 // =========================================
 // فتح الدعوة
 // =========================================
 
-openBtn.addEventListener("click", function () {
+if (openBtn) {
 
-    welcomeScreen.style.opacity = "0";
-    welcomeScreen.style.transition = "opacity .8s ease";
+    openBtn.addEventListener("click", function () {
 
-    setTimeout(function () {
+        welcomeScreen.style.opacity = "0";
 
-        welcomeScreen.style.display = "none";
-        content.style.display = "block";
+        welcomeScreen.style.transition =
+            "opacity .8s ease";
 
-        if (music) {
-            music.play().catch(function () {});
-        }
+        setTimeout(function () {
 
-        startHearts();
+            welcomeScreen.style.display = "none";
 
-        revealCards();
-        revealSections();
+            content.style.display = "block";
 
-    }, 800);
+            if (music) {
 
-});
+                music.play().catch(function () {});
+
+            }
+
+            startHearts();
+
+            revealCards();
+
+            revealSections();
+
+        }, 800);
+
+    });
+
+}
 
 
 // =========================================
 // الموسيقى
 // =========================================
 
-musicBtn.addEventListener("click", function () {
+if (musicBtn) {
 
-    if (music.paused) {
+    musicBtn.addEventListener("click", function () {
 
-        music.play().catch(function () {});
+        if (!music) return;
 
-        musicBtn.innerHTML =
-            '<i class="fa-solid fa-volume-high"></i>';
+        if (music.paused) {
 
-    } else {
+            music.play().catch(function () {});
 
-        music.pause();
+            musicBtn.innerHTML =
+                '<i class="fa-solid fa-volume-high"></i>';
 
-        musicBtn.innerHTML =
-            '<i class="fa-solid fa-volume-xmark"></i>';
+        } else {
 
-    }
+            music.pause();
 
-});
+            musicBtn.innerHTML =
+                '<i class="fa-solid fa-volume-xmark"></i>';
+
+        }
+
+    });
+
+}
 
 
 // =========================================
@@ -69,14 +136,18 @@ musicBtn.addEventListener("click", function () {
 
 let heartInterval = null;
 
+
 function createHeart() {
 
-    const heart = document.createElement("div");
+    const heart =
+        document.createElement("div");
 
     heart.className = "heart";
+
     heart.innerHTML = "❤️";
 
     heart.style.position = "fixed";
+
     heart.style.left =
         Math.random() * 100 + "vw";
 
@@ -89,42 +160,51 @@ function createHeart() {
         0.25 + Math.random() * 0.5;
 
     heart.style.pointerEvents = "none";
+
     heart.style.zIndex = "9998";
 
     document.body.appendChild(heart);
 
+
     const duration =
         5000 + Math.random() * 4000;
+
 
     const startX =
         Math.random() * 60 - 30;
 
+
     const endX =
         Math.random() * 100 - 50;
 
-    const animation = heart.animate(
 
-        [
-            {
-                transform:
-                    `translate(${startX}px,0) rotate(0deg)`
-            },
+    const animation =
+        heart.animate(
+
+            [
+                {
+                    transform:
+                        `translate(${startX}px,0) rotate(0deg)`
+                },
+
+                {
+                    transform:
+                        `translate(${endX}px,110vh) rotate(360deg)`
+                }
+            ],
 
             {
-                transform:
-                    `translate(${endX}px,110vh) rotate(360deg)`
+                duration: duration,
+                easing: "linear"
             }
-        ],
 
-        {
-            duration: duration,
-            easing: "linear"
-        }
+        );
 
-    );
 
     animation.onfinish = function () {
+
         heart.remove();
+
     };
 
 }
@@ -147,9 +227,8 @@ function startHearts() {
 // =========================================
 
 const weddingDate =
-    new Date(
-        "Octobar 9, 2026 19:00:00"
-    ).getTime();
+    new Date("2026-08-21T19:00:00").getTime();
+
 
 const countdown =
     document.getElementById("countdown");
@@ -159,11 +238,14 @@ function updateCountdown() {
 
     if (!countdown) return;
 
+
     const now =
         new Date().getTime();
 
+
     const distance =
         weddingDate - now;
+
 
     if (distance <= 0) {
 
@@ -174,11 +256,13 @@ function updateCountdown() {
 
     }
 
+
     const days =
         Math.floor(
             distance /
             (1000 * 60 * 60 * 24)
         );
+
 
     const hours =
         Math.floor(
@@ -187,6 +271,7 @@ function updateCountdown() {
             (1000 * 60 * 60)
         );
 
+
     const minutes =
         Math.floor(
             (distance %
@@ -194,12 +279,14 @@ function updateCountdown() {
             (1000 * 60)
         );
 
+
     const seconds =
         Math.floor(
             (distance %
                 (1000 * 60)) /
             1000
         );
+
 
     countdown.innerHTML =
         `${days} يوم : ${hours} ساعة : ${minutes} دقيقة : ${seconds} ثانية`;
@@ -216,26 +303,24 @@ setInterval(
 
 
 // =========================================
-// الرسائل
+// التهاني - Firebase
 // =========================================
-
-let messages =
-    JSON.parse(
-        localStorage.getItem("messages")
-    ) || [];
-
 
 function sendMessage() {
 
+    const nameInput =
+        document.getElementById("name");
+
+    const messageInput =
+        document.getElementById("message");
+
+
     const name =
-        document.getElementById("name")
-            .value
-            .trim();
+        nameInput.value.trim();
+
 
     const message =
-        document.getElementById("message")
-            .value
-            .trim();
+        messageInput.value.trim();
 
 
     if (!name || !message) {
@@ -249,7 +334,45 @@ function sendMessage() {
     }
 
 
-    messages.unshift({
+    if (name.length > 50) {
+
+        alert(
+            "الاسم طويل جدًا ❤️"
+        );
+
+        return;
+
+    }
+
+
+    if (message.length > 500) {
+
+        alert(
+            "الرسالة طويلة جدًا ❤️"
+        );
+
+        return;
+
+    }
+
+
+    const sendButton =
+        document.getElementById(
+            "sendMessageBtn"
+        );
+
+
+    if (sendButton) {
+
+        sendButton.disabled = true;
+
+        sendButton.textContent =
+            "جاري الإرسال...";
+
+    }
+
+
+    addDoc(messagesRef, {
 
         name: name,
 
@@ -259,24 +382,122 @@ function sendMessage() {
             new Date()
                 .toLocaleDateString("ar-EG")
 
+    })
+
+    .then(function () {
+
+        nameInput.value = "";
+
+        messageInput.value = "";
+
+
+        alert(
+            "تم إرسال تهنئتك بنجاح ❤️"
+        );
+
+    })
+
+    .catch(function (error) {
+
+        console.error(
+            "Firebase Error:",
+            error
+        );
+
+
+        alert(
+            "حصل خطأ أثناء إرسال التهنئة ❌\nتأكد من اتصال الإنترنت."
+        );
+
+    })
+
+    .finally(function () {
+
+        if (sendButton) {
+
+            sendButton.disabled = false;
+
+            sendButton.textContent =
+                "إرسال التهنئة";
+
+        }
+
     });
-
-
-    localStorage.setItem(
-        "messages",
-        JSON.stringify(messages)
-    );
-
-
-    document.getElementById("name").value = "";
-
-    document.getElementById("message").value = "";
-
-
-    showMessages();
 
 }
 
+
+// =========================================
+// استقبال التهاني من Firebase
+// =========================================
+
+let messages = [];
+
+
+const messagesQuery =
+    query(
+        messagesRef,
+        orderBy("date", "desc")
+    );
+
+
+onSnapshot(
+
+    messagesQuery,
+
+    function (snapshot) {
+
+        messages = [];
+
+
+        snapshot.forEach(function (doc) {
+
+            messages.push({
+
+                id: doc.id,
+
+                ...doc.data()
+
+            });
+
+        });
+
+
+        // لو الأرشيف مفتوح
+        // حدّث التهاني تلقائيًا
+        const allMessages =
+            document.getElementById(
+                "allMessages"
+            );
+
+
+        if (
+            allMessages &&
+            allMessages.style.display === "block"
+        ) {
+
+            showMessages();
+
+        }
+
+    },
+
+
+    function (error) {
+
+        console.error(
+            "Firebase Read Error:",
+            error
+        );
+
+    }
+
+);
+
+
+// =========================================
+// عرض التهاني
+// =========================================
 
 function showMessages() {
 
@@ -284,6 +505,7 @@ function showMessages() {
         document.getElementById(
             "allMessages"
         );
+
 
     if (!allMessages) return;
 
@@ -308,11 +530,13 @@ function showMessages() {
         const msg =
             document.createElement("div");
 
+
         msg.className = "msg";
 
 
         const title =
             document.createElement("h3");
+
 
         title.textContent =
             "💖 " + item.name;
@@ -321,6 +545,7 @@ function showMessages() {
         const text =
             document.createElement("p");
 
+
         text.textContent =
             item.message;
 
@@ -328,12 +553,15 @@ function showMessages() {
         const date =
             document.createElement("small");
 
+
         date.textContent =
-            item.date;
+            item.date || "";
 
 
         msg.appendChild(title);
+
         msg.appendChild(text);
+
         msg.appendChild(date);
 
 
@@ -342,9 +570,6 @@ function showMessages() {
     });
 
 }
-
-
-showMessages();
 
 
 // =========================================
@@ -358,6 +583,10 @@ function openArchive() {
             "passwordBox"
         );
 
+
+    if (!passwordBox) return;
+
+
     passwordBox.style.display =
         passwordBox.style.display === "block"
             ? "none"
@@ -366,12 +595,17 @@ function openArchive() {
 }
 
 
+// =========================================
+// كلمة مرور الأرشيف
+// =========================================
+
 function checkArchivePassword() {
 
-    const password =
+    const passwordInput =
         document.getElementById(
             "archivePassword"
-        ).value;
+        );
+
 
     const passwordError =
         document.getElementById(
@@ -379,7 +613,14 @@ function checkArchivePassword() {
         );
 
 
-    // غيّر كلمة المرور هنا
+    const password =
+        passwordInput.value;
+
+
+    // =====================================
+    // غيّر الباسورد من هنا
+    // =====================================
+
     const correctPassword =
         "1234";
 
@@ -392,7 +633,11 @@ function checkArchivePassword() {
             "allMessages"
         ).style.display = "block";
 
+
         showMessages();
+
+
+        passwordInput.value = "";
 
     } else {
 
@@ -404,10 +649,38 @@ function checkArchivePassword() {
 }
 
 
-// إخفاء الرسائل في البداية
-document.getElementById(
-    "allMessages"
-).style.display = "none";
+// =========================================
+// جعل الدوال متاحة للـHTML
+// =========================================
+
+window.sendMessage =
+    sendMessage;
+
+
+window.openArchive =
+    openArchive;
+
+
+window.checkArchivePassword =
+    checkArchivePassword;
+
+
+// =========================================
+// إخفاء الأرشيف في البداية
+// =========================================
+
+const allMessages =
+    document.getElementById(
+        "allMessages"
+    );
+
+
+if (allMessages) {
+
+    allMessages.style.display =
+        "none";
+
+}
 
 
 // =========================================
@@ -415,7 +688,9 @@ document.getElementById(
 // =========================================
 
 const cards =
-    document.querySelectorAll(".card");
+    document.querySelectorAll(
+        ".card"
+    );
 
 
 cards.forEach(function (card) {
@@ -509,6 +784,7 @@ window.addEventListener(
     function () {
 
         revealCards();
+
         revealSections();
 
     }
@@ -540,5 +816,5 @@ window.addEventListener(
 // =========================================
 
 console.log(
-    "❤️ Wedding Invitation Loaded Successfully ❤️"
+    "❤️ Wedding Invitation + Firebase Loaded Successfully ❤️"
 );
